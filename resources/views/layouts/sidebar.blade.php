@@ -10,7 +10,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Sidebar Menu -->
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -20,7 +20,7 @@
                     <p>Dashboard</p>
                 </a>
             </li>
-            
+
             <li class="nav-header">Data Pengguna</li>
             <li class="nav-item">
                 <a href="{{ url('/level') }}" class="nav-link {{ ($activeMenu == 'level') ? 'active' : '' }}">
@@ -34,7 +34,7 @@
                     <p>Data User</p>
                 </a>
             </li>
-            
+
             <li class="nav-header">Data Barang</li>
             <li class="nav-item">
                 <a href="{{ url('/kategori') }}" class="nav-link {{ ($activeMenu == 'kategori') ? 'active' : '' }}">
@@ -48,8 +48,14 @@
                     <p>Data Barang</p>
                 </a>
             </li>
-            
+
             <li class="nav-header">Data Transaksi</li>
+            <li class="nav-item">
+                <a href="{{ url('/supplier') }}" class="nav-link {{ ($activeMenu == 'supplier') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-truck"></i>
+                    <p>Data Supplier</p>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="{{ url('/stok') }}" class="nav-link {{ ($activeMenu == 'stok') ? 'active' : '' }}">
                     <i class="nav-icon fas fa-cubes"></i>
