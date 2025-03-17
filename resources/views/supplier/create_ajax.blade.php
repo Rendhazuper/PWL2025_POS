@@ -1,38 +1,33 @@
-<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/supplier/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Supplier</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach($level as $l)
-                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
+                    <label>Kode Supplier</label>
+                    <input type="text" name="supplier_kode" id="supplier_kode" class="form-control" required>
+                    <small id="error-supplier_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
+                    <label>Nama Supplier</label>
+                    <input type="text" name="supplier_nama" id="supplier_nama" class="form-control" required>
+                    <small id="error-supplier_nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" name="nama" id="nama" class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
+                    <label>Alamat</label>
+                    <textarea name="supplier_alamat" id="supplier_alamat" class="form-control" rows="3" required></textarea>
+                    <small id="error-supplier_alamat" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
+                    <label>Telepon</label>
+                    <input type="text" name="supplier_telepon" id="supplier_telepon" class="form-control" required>
+                    <small id="error-supplier_telepon" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -49,35 +44,32 @@
 
         $("#form-tambah").validate({
             rules: {
-                level_id: { required: true, number: true },
-                username: { required: true, minlength: 3, maxlength: 20 },
-                nama: { required: true, minlength: 3, maxlength: 100 },
-                password: { required: true, minlength: 6, maxlength: 20 }
+                supplier_kode: { required: true, maxlength: 10 },
+                supplier_nama: { required: true, maxlength: 100 },
+                supplier_alamat: { required: true, maxlength: 255 },
+                supplier_telepon: { required: true, maxlength: 15 }
             },
             messages: {
-                level_id: {
-                    required: "Level pengguna harus dipilih",
-                    number: "Level pengguna tidak valid"
+                supplier_kode: {
+                    required: "Kode supplier harus diisi",
+                    maxlength: "Kode supplier maksimal 10 karakter"
                 },
-                username: {
-                    required: "Username harus diisi",
-                    minlength: "Username minimal 3 karakter",
-                    maxlength: "Username maksimal 20 karakter"
+                supplier_nama: {
+                    required: "Nama supplier harus diisi",
+                    maxlength: "Nama supplier maksimal 100 karakter"
                 },
-                nama: {
-                    required: "Nama harus diisi",
-                    minlength: "Nama minimal 3 karakter",
-                    maxlength: "Nama maksimal 100 karakter"
+                supplier_alamat: {
+                    required: "Alamat harus diisi",
+                    maxlength: "Alamat maksimal 255 karakter"
                 },
-                password: {
-                    required: "Password harus diisi",
-                    minlength: "Password minimal 6 karakter",
-                    maxlength: "Password maksimal 20 karakter"
+                supplier_telepon: {
+                    required: "Telepon harus diisi",
+                    maxlength: "Telepon maksimal 15 karakter"
                 }
             },
             submitHandler: function(form) {
                 console.log('Form submitted');
-                $('.error-text').text(''); // Clear previous errors
+                $('.error-text').text('');
 
                 $.ajax({
                     url: form.action,
@@ -109,8 +101,8 @@
                                 title: response.message
                             });
 
-                            if(typeof dataUser !== 'undefined') {
-                                dataUser.ajax.reload();
+                            if(typeof dataSupplier !== 'undefined') {
+                                dataSupplier.ajax.reload();
                             }
                         } else {
                             console.log('Validation errors:', response.msgField);

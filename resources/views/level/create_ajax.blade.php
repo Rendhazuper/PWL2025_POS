@@ -1,38 +1,23 @@
-<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/level/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Level</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach($level as $l)
-                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
+                    <label>Kode Level</label>
+                    <input type="text" name="level_kode" id="level_kode" class="form-control" required>
+                    <small id="error-level_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" name="nama" id="nama" class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
+                    <label>Nama Level</label>
+                    <input type="text" name="level_nama" id="level_nama" class="form-control" required>
+                    <small id="error-level_nama" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -49,30 +34,17 @@
 
         $("#form-tambah").validate({
             rules: {
-                level_id: { required: true, number: true },
-                username: { required: true, minlength: 3, maxlength: 20 },
-                nama: { required: true, minlength: 3, maxlength: 100 },
-                password: { required: true, minlength: 6, maxlength: 20 }
+                level_kode: { required: true, maxlength: 10 },
+                level_nama: { required: true, maxlength: 100 }
             },
             messages: {
-                level_id: {
-                    required: "Level pengguna harus dipilih",
-                    number: "Level pengguna tidak valid"
+                level_kode: {
+                    required: "Kode level harus diisi",
+                    maxlength: "Kode level maksimal 10 karakter"
                 },
-                username: {
-                    required: "Username harus diisi",
-                    minlength: "Username minimal 3 karakter",
-                    maxlength: "Username maksimal 20 karakter"
-                },
-                nama: {
-                    required: "Nama harus diisi",
-                    minlength: "Nama minimal 3 karakter",
-                    maxlength: "Nama maksimal 100 karakter"
-                },
-                password: {
-                    required: "Password harus diisi",
-                    minlength: "Password minimal 6 karakter",
-                    maxlength: "Password maksimal 20 karakter"
+                level_nama: {
+                    required: "Nama level harus diisi",
+                    maxlength: "Nama level maksimal 100 karakter"
                 }
             },
             submitHandler: function(form) {
@@ -109,8 +81,8 @@
                                 title: response.message
                             });
 
-                            if(typeof dataUser !== 'undefined') {
-                                dataUser.ajax.reload();
+                            if(typeof dataLevel !== 'undefined') {
+                                dataLevel.ajax.reload();
                             }
                         } else {
                             console.log('Validation errors:', response.msgField);

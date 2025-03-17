@@ -1,38 +1,43 @@
-<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/barang/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Barang</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach($level as $l)
-                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
+                    <label>Kode Barang</label>
+                    <input type="text" name="barang_kode" id="barang_kode" class="form-control" required>
+                    <small id="error-barang_kode" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Nama Barang</label>
+                    <input type="text" name="barang_nama" id="barang_nama" class="form-control" required>
+                    <small id="error-barang_nama" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select name="kategori_id" id="kategori_id" class="form-control" required>
+                        <option value="">Pilih Kategori</option>
+                        @foreach($kategoris as $kategori)
+                            <option value="{{ $kategori->kategori_id }}">{{ $kategori->kategori_nama }}</option>
                         @endforeach
                     </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
+                    <small id="error-kategori_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
+                    <label>Harga Beli</label>
+                    <input type="number" name="harga_beli" id="harga_beli" class="form-control" required>
+                    <small id="error-harga_beli" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Nama</label>
-                    <input type="text" name="nama" id="nama" class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" id="password" class="form-control" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
+                    <label>Harga Jual</label>
+                    <input type="number" name="harga_jual" id="harga_jual" class="form-control" required>
+                    <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -49,35 +54,38 @@
 
         $("#form-tambah").validate({
             rules: {
-                level_id: { required: true, number: true },
-                username: { required: true, minlength: 3, maxlength: 20 },
-                nama: { required: true, minlength: 3, maxlength: 100 },
-                password: { required: true, minlength: 6, maxlength: 20 }
+                barang_kode: { required: true, maxlength: 10 },
+                barang_nama: { required: true, maxlength: 100 },
+                kategori_id: { required: true },
+                harga_beli: { required: true, number: true, min: 0 },
+                harga_jual: { required: true, number: true, min: 0 }
             },
             messages: {
-                level_id: {
-                    required: "Level pengguna harus dipilih",
-                    number: "Level pengguna tidak valid"
+                barang_kode: {
+                    required: "Kode barang harus diisi",
+                    maxlength: "Kode barang maksimal 10 karakter"
                 },
-                username: {
-                    required: "Username harus diisi",
-                    minlength: "Username minimal 3 karakter",
-                    maxlength: "Username maksimal 20 karakter"
+                barang_nama: {
+                    required: "Nama barang harus diisi",
+                    maxlength: "Nama barang maksimal 100 karakter"
                 },
-                nama: {
-                    required: "Nama harus diisi",
-                    minlength: "Nama minimal 3 karakter",
-                    maxlength: "Nama maksimal 100 karakter"
+                kategori_id: {
+                    required: "Kategori harus dipilih"
                 },
-                password: {
-                    required: "Password harus diisi",
-                    minlength: "Password minimal 6 karakter",
-                    maxlength: "Password maksimal 20 karakter"
+                harga_beli: {
+                    required: "Harga beli harus diisi",
+                    number: "Harga beli harus berupa angka",
+                    min: "Harga beli tidak boleh negatif"
+                },
+                harga_jual: {
+                    required: "Harga jual harus diisi",
+                    number: "Harga jual harus berupa angka",
+                    min: "Harga jual tidak boleh negatif"
                 }
             },
             submitHandler: function(form) {
                 console.log('Form submitted');
-                $('.error-text').text(''); // Clear previous errors
+                $('.error-text').text('');
 
                 $.ajax({
                     url: form.action,
@@ -109,8 +117,8 @@
                                 title: response.message
                             });
 
-                            if(typeof dataUser !== 'undefined') {
-                                dataUser.ajax.reload();
+                            if(typeof dataBarang !== 'undefined') {
+                                dataBarang.ajax.reload();
                             }
                         } else {
                             console.log('Validation errors:', response.msgField);

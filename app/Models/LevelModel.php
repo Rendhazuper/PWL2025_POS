@@ -16,4 +16,11 @@ class LevelModel extends Model
         'level_kode',
         'level_nama'
     ];
+
+    public $timestamps = false;
+
+    public function users()
+    {
+        return $this->hasMany('App\Models\UserModel', 'level_id', 'level_id');
+    }
 }
