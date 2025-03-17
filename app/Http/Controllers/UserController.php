@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use Illuminate\Http\Request;
 use App\Models\UserModel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -215,7 +216,93 @@ class UserController extends Controller
             return redirect('/user')->with('error', 'Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
     }
+    public function create_ajax()
+    {
+        $level = LevelModel::select('level_id', 'level_nama')->get();
 
+        return view('user.create_ajax')
+        ->with('level', $level);
+    }
+    public function update_ajax(Request $request, $id){
+        if($request->ajax() || $request->wantsJson()){
+            $rules = [
+                'level_id' => 'required|integer',
+                'username' => 'required|max:20|unique:m_user,username,'.$id.',user_id',
+                'nama'      => 'required|max:100',
+                'password'  => 'nullable|min:6|max:20'
+            ];
+            $validator = Validator::make($request->all(), $rules);
 
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'meesage' => 'Validasi gagal,',
+                'msgField' => $validator->errors()
+            ]);
+        }
 
+        $check = UserModel::find($id);
+        if($check){
+            if(!$request->filled('password')){
+                $request->request->remove('password');
+        }
+
+        $check->update($request->all());
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil diupdate'
+        ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
 }
+    public function store_ajax(Request $request)
+    {
+        if($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'level_id' => 'required|integer',
+                'username' => 'required|max:20|unique:m_user,username',
+                'nama' => 'required|max:100',
+                'password' => 'required|min:6|max:20'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            try {
+                UserModel::create([
+                    'username' => $request->username,
+                    'password' => bcrypt($request->password),
+                    'nama' => $request->nama,
+                    'level_id' => $request->level_id
+                ]);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data berhasil disimpan'
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Gagal menyimpan data'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+}
+
+
+
