@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 class WelcomeController extends Controller
 {
     public function hello(){
-        return 'hello world';
-    }
+    $breadcrumb= (object)[
+        'title' => 'Selamat Datang',
+        'list' => ['Home', 'Welcome']
+    ];
 
-    public function nama($nama){
-        return  ('helllo'. ' ' . $nama); 
+    $activeMenu = 'dashboard'; 
+
+    return view('welcome', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu]);
     }
 }
