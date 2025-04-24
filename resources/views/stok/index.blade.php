@@ -5,20 +5,20 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah</a>
-            <button onclick= "modalAction('{{ url('supplier/create') }}')" class = "btn btn-sm btn-success mt-1">Tambah ajax</button>
+            <a class="btn btn-sm btn-primary mt-1" href="{{ url('stok/create') }}">Tambah</a>
+            <button onclick= "modalAction('{{ url('stok/create') }}')" class = "btn btn-sm btn-success mt-1">Tambah ajax</button>
         </div>
     </div>
 
     <div class="card-body">
-      
-        <table class="table table-bordered table-striped table-hover table-sm" id="tabel_supplier">
+        <table class="table table-bordered table-striped table-hover table-sm" id="tabel_stok">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Kode Suppliier</th>
-                    <th>Nama Supplier</th>
-                    <th>Alamat Supplier </th>
+                    <th>Nama Barang</th>
+                    <th>Jumlah Stok</th>
+                    <th>Supplier</th>
+                    <th>Petugas Input</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -34,53 +34,58 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 
 @push('js')
 <script>
-function modalAction(url = '') {
+    function modalAction(url = '') {
       $('#myModal').load(url,function(){
         $('#myModal').modal('show');
 });
 }
-
     $(document).ready(function() {
-        var dataLevel = $('#tabel_supplier').DataTable({
-            sereverSide: true,
+        $('#tabel_stok').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
-                url : "{{ url('supplier/list') }} ",
-                dataType: "json",
-                type: "POST",
+                url: "{{ url('stok/list') }}",
+                type: "POST"
             },
-            columns:[
+            columns: [
                 {
-                    data : "DT_RowIndex",
+                    data: 'DT_RowIndex',
                     className: "text-center",
                     orderable: false,
                     searchable: false
                 },
                 {
-                    data: "supplier_kode",
-                    className: "",
-                    orderable: true,
-                    searchable: true    
-                },
-                {
-                    data: "supplier_nama",
+                    data: 'barang.barang_nama',
                     className: "",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "supplier_alamat",
+                    data: 'stok_jumlah',
                     className: "",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "aksi",
+                    data: 'supplier.supplier_nama',
                     className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: 'user.nama',
+                    className: "",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: 'aksi',
+                    className: "text-center",
                     orderable: false,
-                    searchable: false   
+                    searchable: false
                 }
             ]
         });
     });
-    </script>
-    @endpush
+</script>
+@endpush

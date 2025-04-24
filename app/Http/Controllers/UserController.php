@@ -81,10 +81,11 @@ class UserController extends Controller
             UserModel::create($request->all());
             return response()->json([
                 'status' => true,
-                'message' => 'Data user berhasil disimpan'
+                'message' => 'Data user berhasil disimpan',
+                'redirect' => url('/user')
             ]);
         }
-        redirect('/');
+        return redirect('/user');
     }
 
     public function edit(string $id){
