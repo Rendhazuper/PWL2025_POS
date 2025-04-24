@@ -34,6 +34,20 @@ Route::get('register',[AuthController::class, 'register']);
 Route::post('/register/create',[AuthController::class, 'store']);
 Route::post('logout',[AuthController::class, 'logout']);
 
+Route::get('/phpinfo', function() {
+    return phpinfo();
+});
+
+Route::get('/check-extensions', function() {
+    return [
+        'php_version' => PHP_VERSION,
+        'php_ini' => php_ini_loaded_file(),
+        'zip_loaded' => extension_loaded('zip'),
+        'gd_loaded' => extension_loaded('gd'),
+        'all_extensions' => get_loaded_extensions()
+    ];
+});
+
 Route::middleware(['auth'])->group(function (){
 
     Route::middleware(['authorize:ADM,MNG'])->group(function () {
@@ -76,10 +90,14 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/list', [BarangController::class, 'list']);
             Route::get('/create', [BarangController::class, 'create']);
             Route::post('/', [BarangController::class, 'store']);
-            Route::get('/{id}', [BarangController::class, 'show']);
             Route::get('/{id}/edit', [BarangController::class, 'edit']);
-            Route::put('/{id}', [BarangController::class, 'update']);
-            Route::delete('/{id}', [BarangController::class, 'destroy']);
+            Route::put('/{id}/update', [BarangController::class, 'update']);
+            Route::get('/{id}/delete', [BarangController::class, 'confirm']);
+            Route::delete('/{id}/delete', [BarangController::class, 'delete']);
+            Route::get('/import', [BarangController::class, 'import']);
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
+            Route::get('/export_excel', [BarangController::class, 'export_excel']);
+            Route::get('/export_pdf', [BarangController::class, 'export_pdf']);
         });
 
         Route::prefix('supplier')->group(function () {
