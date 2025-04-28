@@ -1,4 +1,20 @@
 <div class="sidebar">
+
+
+  <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            @if(Auth::user()->profile_image)
+                <img class="profile-user-img img-fluid img-circle" src="{{ Auth::user()->profile_image }}" alt="User profile picture">
+            @else
+                <img class="profile-user-img img-fluid img-circle" src="{{ asset('base.jpg') }}" alt="User profile picture">
+            @endif
+        </div>
+        <div class="info">
+            <a href="#" class="d-block">{{ Auth::user()->nama }}</a>
+        </div>
+    </div>
+
   <!-- SidebarSearch Form -->
   <div class="form-inline mt-2">
     <div class="input-group" data-widget="sidebar-search">
@@ -14,6 +30,14 @@
   <!-- Sidebar Menu -->
   <nav class="mt-2">
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <li class="nav-header">Profile</li>
+      <li class="nav-item">
+          <a href="{{ url('/profile/' . Auth::user()->user_id) }}"
+              class="nav-link {{ $activeMenu == 'profile' ? 'active' : '' }}">
+              <i class="nav-icon fas fa-user-circle"></i>
+              <p>Profil</p>
+          </a>
+      </li>
 
       <!-- Dashboard -->
       <li class="nav-item">

@@ -50,6 +50,10 @@ Route::get('/check-extensions', function() {
 
 Route::middleware(['auth'])->group(function (){
 
+    Route::get('/profile/{id}', [AuthController::class, 'profile'])->name('profile');
+    Route::get('/profile/edit/{id}', [AuthController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update/{id}', [AuthController::class, 'update'])->name('profile.update');
+
     Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::prefix('user')->group(function () {
             Route::get('/',[UserController::class, 'index']);
