@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\LvelController;
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,23 @@ Route::post('/logout',App\Http\Controllers\API\LogoutController::class)->name('l
 
 //routelevel 
 Route::get('levels',[LvelController::class, 'index']);
+Route::post('levels',[LvelController::class, 'store']);
+Route::get('levels/{level}',[LvelController::class, 'show']);
+Route::put('levels/{level}',[LvelController::class, 'update']);
+Route::delete('levels/{level}',[LvelController::class, 'destroy']);
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+
+//routeUser
+Route::prefix('user')->group(function () {
+    Route::get('/all',[UserController::class, 'index']);
+    Route::get('/{user}',[UserController::class, 'show']);
+    Route::put('/{user}',[UserController::class, 'update']);
+    Route::delete('/{user}',[UserController::class, 'destroy']);
+});
+Route::get('user',[LvelController::class, 'index']);
 Route::post('levels',[LvelController::class, 'store']);
 Route::get('levels/{level}',[LvelController::class, 'show']);
 Route::put('levels/{level}',[LvelController::class, 'update']);

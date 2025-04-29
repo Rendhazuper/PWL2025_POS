@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+    //Create User
     public function __invoke(Request $request)
     {
         $validator = Validator::make($request->all(), [
