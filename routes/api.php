@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\BarangController;
 use App\Http\Controllers\API\LvelController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\KategoriController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +41,22 @@ Route::prefix('user')->group(function () {
     Route::get('/{user}',[UserController::class, 'show']);
     Route::put('/{user}',[UserController::class, 'update']);
     Route::delete('/{user}',[UserController::class, 'destroy']);
+});
+//routeKategori
+Route::post('/kategori',App\Http\Controllers\API\KategoriController::class)->name('kategori');
+Route::prefix('kategori')->group(function () {
+    Route::get('/all',[KategoriController::class, 'index']);
+    Route::get('/{kategori}',[KategoriController::class, 'show']);
+    Route::put('/{kategori}',[KategoriController::class, 'update']);
+    Route::delete('/{kategori}',[KategoriController::class, 'destroy']);
+});
+//routeBarang
+Route::post('/Barang',App\Http\Controllers\API\BarangController::class)->name('kategori');
+Route::prefix('kategori')->group(function () {
+    Route::get('/all',[BarangController::class, 'index']);
+    Route::get('/{kategori}',[BarangController::class, 'show']);
+    Route::put('/{kategori}',[BarangController::class, 'update']);
+    Route::delete('/{kategori}',[BarangController::class, 'destroy']);
 });
 Route::get('user',[LvelController::class, 'index']);
 Route::post('levels',[LvelController::class, 'store']);
