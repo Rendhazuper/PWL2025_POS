@@ -26,20 +26,28 @@ class BarangController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
-        if($validator->fails())
-        {
+        if($validator->fails()) {
             return response()->json($validator->errors(), 422); 
         }
 
-        $imageName = null;
-        
-        // Pastikan folder ada terlebih dahulu
-        if (!Storage::disk('public')->exists('post')) {
-            Storage::disk('public')->makeDirectory('post');
-        }
-        
-        // Gunakan try-catch untuk menangkap error
         try {
+            // Cek apakah barang_kode sudah ada di database
+            $existingBarang = BarangModel::where('barang_kode', $request->barang_kode)->first();
+            
+            if ($existingBarang) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang sudah terdaftar'
+                ], 409);
+            }
+            
+            $imageName = null;
+            
+            // Pastikan folder ada terlebih dahulu
+            if (!Storage::disk('public')->exists('post')) {
+                Storage::disk('public')->makeDirectory('post');
+            }
+            
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 
@@ -70,6 +78,7 @@ class BarangController extends Controller
             
             return response()->json([
                 'success' => false,
+                'message' => 'Gagal menyimpan data barang'
             ], 409);
         } catch (\Exception $e) {
             return response()->json([
