@@ -52,10 +52,11 @@ Route::prefix('kategori')->group(function () {
 });
 //routeBarang
 Route::post('/Barang',App\Http\Controllers\API\BarangController::class)->name('kategori');
-Route::prefix('kategori')->group(function () {
+
+Route::prefix('barang')->group(function () {
     Route::get('/all',[BarangController::class, 'index']);
     Route::get('/{kategori}',[BarangController::class, 'show']);
-    Route::put('/{kategori}',[BarangController::class, 'update']);
+    Route::put('/{barang}',[BarangController::class, 'update']);
     Route::delete('/{kategori}',[BarangController::class, 'destroy']);
 });
 Route::get('user',[LvelController::class, 'index']);

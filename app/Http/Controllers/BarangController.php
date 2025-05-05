@@ -32,7 +32,7 @@ class BarangController extends Controller
 
     public function list(Request $request)
     {
-        $barang = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id')
+        $barang = BarangModel::select('barang_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual', 'kategori_id', 'image')
             ->with('kategori');
 
         if ($kategori_id = $request->input('filter_kategori')) {

@@ -45,6 +45,7 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>Image</th>
                     <th>Kode Barang</th>
                     <th>Nama Barang</th>
                     <th>Harga Beli</th>
@@ -86,6 +87,13 @@
             columns: [
                 {
                     data: "barang_id",
+                    className: "text-center",
+                    width: "5%",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: "image",
                     className: "text-center",
                     width: "5%",
                     orderable: false,

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BarangModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -16,13 +17,13 @@ class BarangController extends Controller
 
     public function __invoke(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'kategori_id' => 'required|exists:kategori_models,id',
-            'barang_kode' => 'required|unique:barang_models,barang_kode',
+            'kategori_id' => 'required',
+            'barang_kode' => 'required',
             'barang_nama' => 'required',
             'harga_beli' => 'required|numeric',
             'harga_jual' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         if($validator->fails())
@@ -30,22 +31,52 @@ class BarangController extends Controller
             return response()->json($validator->errors(), 422); 
         }
 
-        $barang = BarangModel::create([
-            'kategori_id' => $request->kategori_id,
-            'barang_kode' => $request->barang_kode,
-            'barang_nama' => $request->barang_nama,
-            'harga_beli' => $request->harga_beli,
-            'harga_jual' => $request->harga_jual,
-        ]);
-        if($barang) {
-            return response()->json([
-                'success' => true,
-                'kategori' => $barang,
-            ], 201);
+        $imageName = null;
+        
+        // Pastikan folder ada terlebih dahulu
+        if (!Storage::disk('public')->exists('post')) {
+            Storage::disk('public')->makeDirectory('post');
         }
-        return response()->json([
-            'success' => false,
-        ], 409);
+        
+        // Gunakan try-catch untuk menangkap error
+        try {
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                
+                // Periksa apakah file valid
+                if ($image->isValid()) {
+                    $imageName = $image->hashName();
+                    
+                    // Gunakan pendekatan alternatif untuk menyimpan file
+                    $image->move(storage_path('app/public/post'), $imageName);
+                }
+            }
+
+            $barang = BarangModel::create([
+                'kategori_id' => $request->kategori_id,
+                'barang_kode' => $request->barang_kode,
+                'barang_nama' => $request->barang_nama,
+                'harga_beli' => $request->harga_beli,
+                'harga_jual' => $request->harga_jual,
+                'image' => $imageName
+            ]);
+
+            if($barang) {
+                return response()->json([
+                    'success' => true,
+                    'kategori' => $barang,
+                ], 201);
+            }
+            
+            return response()->json([
+                'success' => false,
+            ], 409);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show(BarangModel $barang)
@@ -55,12 +86,32 @@ class BarangController extends Controller
 
     public function update(Request $request, BarangModel $barang)
     {
+      
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+        
+            if ($barang->image && Storage::disk('public')->exists('post/' . $barang->image)) {
+                Storage::disk('public')->delete('post/' . $barang->image);
+            }
+
+            $image = $request->file('image');
+            $imageName = $image->hashName();
+            $image->storeAs('public/post', $imageName);
+            $request->merge(['image' => $imageName]);
+        }
+
         $barang->update($request->all());
-        return BarangModel::find($barang);
+        return response()->json([
+            'success' => true,
+            'data' => $barang
+        ]);
     }
 
     public function destroy(BarangModel $barang)
     {
+        // Hapus gambar jika ada
+        if ($barang->image && Storage::disk('public')->exists('post/' . $barang->image)) {
+            Storage::disk('public')->delete('post/' . $barang->image);
+        }
      
         $barang->delete();
 
